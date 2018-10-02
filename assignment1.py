@@ -93,9 +93,7 @@ def linear_regression(x, t, basis, reg_lambda=0, degree=0):
 
     y = phi.dot(w)
 
-    mse_error = np.mean(np.square(t - y))
-
-    train_err = mse_error
+    train_err = np.sqrt(np.mean(np.square(t - y)))
 
     return (w, train_err)
 
@@ -143,11 +141,10 @@ def evaluate_regression(x, t, w, basis, degree):
       """
     # TO DO:: Compute t_est and err
 
-    phi = design_matrix(x,'polynomial',degree)
+    phi = design_matrix(x, 'polynomial', degree)
 
     t_est = phi.dot(w)
 
-    err = np.mean(np.square(t - t_est))
-
+    err = np.sqrt(np.mean(np.square(t - t_est)))
 
     return (t_est, err)

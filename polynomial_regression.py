@@ -3,7 +3,6 @@
 import assignment1 as a1
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 
 (countries, features, values) = a1.load_unicef_data()
 
@@ -21,6 +20,9 @@ x_test = x[N_TRAIN:, :]
 t_train = targets[0:N_TRAIN]
 t_test = targets[N_TRAIN:]
 
+print("sdasdasdasdas")
+print(t_test.shape)
+
 # TO DO:: Complete the linear_regression and evaluate_regression functions of the assignment1.py
 train_err =[]
 test_err =[]
@@ -33,11 +35,13 @@ for p in range(1,7):
 
 train_err =np.array(train_err)
 test_err =np.array(test_err)
+print(train_err)
+print(test_err)
 # Produce a plot of results.
 plt.plot(train_err[:,0], train_err[:,1])
 plt.plot(test_err[:,0], test_err[:,1])
 plt.ylabel('RMS')
-plt.legend(['Test error', 'Training error'])
+plt.legend(['Training error', 'Test error'])
 plt.title('Fit with polynomials, no regularization')
 plt.xlabel('Polynomial degree')
 plt.show()
