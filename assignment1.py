@@ -87,7 +87,8 @@ def linear_regression(x, t, basis, reg_lambda=0, degree=0):
 
     w = np.ones(shape=(1, w_len), dtype=np.float32)
 
-    w = np.linalg.pinv(phi).dot(t)
+    w = np.linalg.inv((reg_lambda * (np.eye(phi.shape[1], dtype=np.float32))) + (phi.transpose().dot(phi))).dot(
+        phi.transpose()).dot(t)
 
     # Measure root mean squared error on training data.
 
@@ -119,7 +120,13 @@ def design_matrix(x, basis, degree=0):
                 temp = np.power(x, p)
                 phi = np.concatenate((phi, temp), 1)
     elif basis == 'ReLU':
-        phi = None
+        phi = np.ones(shape=x.shape[0])
+        phi.shape = (-1, 1)
+        g = -x + 5000
+        zero_mat = np.zeros(g.shape, dtype=int)
+        temp = np.maximum(zero_mat, g)
+        phi = np.concatenate((phi, temp), 1)
+        print(phi.shape)
     else:
         assert (False), 'Unknown basis %s' % basis
 
@@ -141,7 +148,7 @@ def evaluate_regression(x, t, w, basis, degree):
       """
     # TO DO:: Compute t_est and err
 
-    phi = design_matrix(x, 'polynomial', degree)
+    phi = design_matrix(x, basis, degree)
 
     t_est = phi.dot(w)
 
