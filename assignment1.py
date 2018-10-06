@@ -77,25 +77,26 @@ def linear_regression(x, t, basis, reg_lambda=0, degree=0):
     # e.g. phi = design_matrix(x,basis, degree)
 
     # TO DO:: Compute coefficients using phi matrix
-
+    #obtain the design matrix phi
     phi = design_matrix(x, basis, degree)
-
-    print(phi.shape)
-    print(type(phi))
-
+    #initialize the co-efficents array
     w_len = x.shape[1] * degree + 1
 
     w = np.ones(shape=(1, w_len), dtype=np.float32)
-
-    w = np.linalg.inv((reg_lambda * (np.eye(phi.shape[1], dtype=np.float32))) + (phi.transpose().dot(phi))).dot(
-        phi.transpose()).dot(t)
+    #calculate the optimal w by inversion method
+    #formula uses regularization
+    if reg_lambda == 0:
+        w= np.matmul(np.linalg.pinv(phi),t)
+    else:
+        w_inner = (reg_lambda * (np.eye(phi.shape[1], dtype=np.float32)))+(np.matmul(phi.transpose(),phi))
+        w_inv = np.matmul(np.linalg.inv(w_inner),phi.transpose())
+        w = np.matmul(w_inv,t)
 
     # Measure root mean squared error on training data.
-
     y = phi.dot(w)
-
     train_err = np.sqrt(np.mean(np.square(t - y)))
 
+    #return co-efficents and training error
     return (w, train_err)
 
 
@@ -110,23 +111,23 @@ def design_matrix(x, basis, degree=0):
     """
     # TO DO:: Compute desing matrix for each of the basis functions
 
-    if basis == 'polynomial':
+    if basis == 'polynomial': #the case that basis function type is polynomial
         for p in range(0, degree + 1):
-            if p == 0:
+            if p == 0: #adding the bias w0
                 phi = np.ones(shape=x.shape[0])
                 phi.shape = (-1, 1)
-                print(phi.shape)
-            else:
+            else: #calcuating the higher order basis functions and concatanating them at each degree
                 temp = np.power(x, p)
                 phi = np.concatenate((phi, temp), 1)
-    elif basis == 'ReLU':
-        phi = np.ones(shape=x.shape[0])
+    elif basis == 'ReLU': #case that basis function is ReLu
+        phi = np.ones(shape=x.shape[0]) #bias w0
         phi.shape = (-1, 1)
-        g = -x + 5000
-        zero_mat = np.zeros(g.shape, dtype=int)
-        temp = np.maximum(zero_mat, g)
-        phi = np.concatenate((phi, temp), 1)
-        print(phi.shape)
+        g = -x + 5000 #function for Relu g(x)
+        print(g)
+        zero_mat = np.zeros(g.shape, dtype=int) #initialize a zero matrix of same shape as x for comparision
+        temp = np.maximum(zero_mat, g) #get a output matrix where each element is a max of each element in g(x) and zero_mat
+        print(temp)
+        phi = np.concatenate((phi, temp), 1) #concatante the bias to get design matrix
     else:
         assert (False), 'Unknown basis %s' % basis
 
@@ -147,11 +148,11 @@ def evaluate_regression(x, t, w, basis, degree):
       err RMS error on the input dataset 
       """
     # TO DO:: Compute t_est and err
-
+    #obtain the design matrix
     phi = design_matrix(x, basis, degree)
-
+    #compute the predictions
     t_est = phi.dot(w)
-
+    #calcluate RMS error
     err = np.sqrt(np.mean(np.square(t - t_est)))
 
     return (t_est, err)

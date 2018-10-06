@@ -4,6 +4,7 @@ import assignment1 as a1
 import numpy as np
 import matplotlib.pyplot as plt
 
+#extract the 2d array from data dictionary
 (countries, features, values) = a1.load_unicef_data()
 
 targets = values[:, 1]
@@ -12,6 +13,7 @@ x = values[:, 7:]
 
 input_lambda = [0, .01, .1, 1, 10, 100, 1000, 10000]
 
+#normalize the data
 x = a1.normalize_data(x)
 
 n_train_valid = 100  # no of train and validation data sets
@@ -28,11 +30,13 @@ x_test = x[n_train_valid:, :]
 t_train_valid = targets[0:n_train_valid]
 t_test = targets[n_train_valid:]
 
-validation_error=[]
+
 lambda_val_error=[]
 
 min_valid_err =0
+#computing cross-validation error and choosing the best lambda
 for idx in range(0,len(input_lambda)):
+    validation_error =[]
     for k_idx in range(0, k):
         x_valid = x_train_valid[n_start_valid:n_end_valid, :]
         t_valid = t_train_valid[n_start_valid:n_end_valid, :]
@@ -69,7 +73,7 @@ print(best_lambda)
 
 lambda_val_error =np.array(lambda_val_error)
 # Produce a plot of results.
-plt.plot(lambda_val_error[:,0], lambda_val_error[:,1])
+plt.semilogx(lambda_val_error[:,0], lambda_val_error[:,1])
 plt.ylabel('RMS')
 plt.legend('Validation error')
 plt.title('Validation error with different lambdas')

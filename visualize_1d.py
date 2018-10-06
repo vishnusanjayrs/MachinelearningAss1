@@ -24,7 +24,7 @@ t_test = targets[N_TRAIN:]
 
 t_dummy = np.linspace(1,500,500)
 
-for i in range(10,13):
+for i in range(3,7):
     x_train = x[0:N_TRAIN,i]
     x_test = x[N_TRAIN:,i]
     (w, tr_err) = a1.linear_regression(x_train, t_train, 'polynomial', degree=3)
@@ -37,5 +37,5 @@ for i in range(10,13):
     plt.plot(x_ev,y_ev,'-r')
     plt.plot(x_train,t_train,'bo')
     plt.plot(x_test,t_test,'.g')
-    plt.title('A visualization of a regression estimate using random outputs for feature'+features[i])
+    plt.title('A visualization of a regression estimate using random outputs for feature'+features[i+7])
     plt.show()
